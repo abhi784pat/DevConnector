@@ -7,6 +7,7 @@ const auth=require('../../middleware/auth');
 const {check,validationResult}=require('express-validator/check')
 const Profile=require('../../models/Profile');
 const User=require('../../models/User');
+const Post=require('../../models/User')
 
 // @route GET api/profile/me
 // @desc Get current users profiles
@@ -134,8 +135,10 @@ router.delete('/' ,auth,async(req,res)=>{
     try {
         //Remove Profile
 await Profile.findOneAndRemove({user:req.user.id});
+//Remove Post
+await Post.deleteMany({user:req.user.id});
  //Remove user
-await Profile.findOneAndRemove({_id:req.user.id});
+await User.findOneAndRemove({_id:req.user.id});
 res.json({msg:'User Deleted'})
         
         
@@ -318,7 +321,9 @@ router.get('/github/:username', async (req, res) => {
         return res.json(githubResponse.data);
       } catch (err) {
         console.error(err.message);
-        return res.status(404).json({ msg: 'No Github profile found' });
+        return res.status(404).json({ msg: 'No Github profile found' })
+        
+        
       }
   });
 
